@@ -78,7 +78,7 @@ Target directory is not empty!";
 fi;
 
 # Clone dist files and clean up.
-git clone --quiet https://github.com/natemow/codeception-ci-generator.git;
+git clone --quiet https://github.com/SochaDev/codeception-ci-generator.git;
 rm -rf codeception-ci-generator/.git;
 mv codeception-ci-generator/* ./ && rm -rf codeception-ci-generator;
 
