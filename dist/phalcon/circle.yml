@@ -1,0 +1,32 @@
+general:
+  branches:
+    only:
+      - master
+machine:
+  timezone:
+    America/New_York
+  environment:
+    CIRCLE_ENV: test
+  php:
+    version: 5.4.37
+dependencies:
+  pre:
+    # Clone the 1.3.5 Phalcon branch.
+    # Replace install's phpize with full phpenv path equivalent.
+    # @see https://forum.phalconphp.com/discussion/582/php-5-3-3-and-php-5-4-13-dual-installation-error
+    - git clone -b 1.3.5 --depth 1 git://github.com/phalcon/cphalcon.git && ls -la
+    - sed -i 's/phpize/~\/\.phpenv\/shims\/phpize/g' cphalcon/build/install
+    # Install and enable Phalcon.
+    - cd cphalcon/build && ./install
+    - touch ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini && echo 'extension="phalcon.so"' > ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini
+    # Enable Xdebug extension.
+    - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+    # Restart Apache to load new extensions.
+    - sudo service apache2 restart && php -v && php -m
+    # Set up the app and prepare to test.
+    - mysql -e 'CREATE DATABASE PROJECT;' -uroot;
+    # - cp app/config/config-sample.php app/config/config.php && cp codeception-sample.yml codeception.yml
+    - mkdir -p app/filestore app/cache app/cache/volt app/log && chmod -R a+w app/filestore app/cache app/cache/volt app/log
+test:
+  override:
+    - ./vendor/bin/codecept --steps run PROJECT --coverage --coverage-text

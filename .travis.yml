@@ -1,0 +1,28 @@
+sudo: false
+services:
+  - mysql
+language:
+  - php
+php:
+  - 5.5
+before_install:
+  # Clone, install and enable the 1.3.5 Phalcon branch.
+  - git clone -b 1.3.5 --quiet --depth 1 git://github.com/phalcon/cphalcon.git && ls -la
+  - cd cphalcon/build && ./install
+  - touch ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini && echo 'extension="phalcon.so"' > ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini
+  - cd ../../
+install:
+  - composer self-update
+  - composer require ext-phalcon:1.3.5
+  - composer --no-interaction --prefer-source install
+before_script:
+  - chmod +x codeception-ci-generator.sh
+  - mysql -e 'CREATE DATABASE generic;' -uroot;
+  - mysql -e 'CREATE DATABASE drupal7;' -uroot;
+  - mysql -e 'CREATE DATABASE drupal8;' -uroot;
+  - mysql -e 'CREATE DATABASE phalcon1;' -uroot;
+script:
+  - ./codeception-ci-generator.sh --testing 1
+  - ./codeception-ci-generator.sh --testing 2
+  - ./codeception-ci-generator.sh --testing 3
+  - ./codeception-ci-generator.sh --testing 4

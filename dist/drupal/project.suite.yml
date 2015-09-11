@@ -1,0 +1,25 @@
+# Codeception Test Suite Configuration
+
+class_name: ActorPROJECT_CAMEL
+coverage:
+  include:
+    - docroot/*
+  exclude:
+    - app/cache/*
+modules:
+    error_level: "E_ALL"
+    enabled: [PhpBrowser, Filesystem, Asserts, Db]
+    config:
+        PhpBrowser:
+            url: 'http://localhost'
+        Db:
+            # Codeception Db module will throw a segfault error for db dumps of 
+            # any significant size; you're better off not using populate/cleanup 
+            # options below and pre-loading directly.
+            dsn: 'mysql:host=127.0.0.1;dbname=PROJECT'
+            user: 'MYSQL_USER_NAME'
+            password: 'MYSQL_USER_PASS'
+            dump: 'tests/_bootstrap/PROJECT.sql'
+            populate: false
+            cleanup: false
+            reconnect: false

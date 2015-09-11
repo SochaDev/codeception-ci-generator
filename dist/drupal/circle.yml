@@ -1,0 +1,22 @@
+general:
+  branches:
+    only:
+      - master
+machine:
+  timezone:
+    America/New_York
+  environment:
+    CIRCLE_ENV: test
+  php:
+    version: 5.5.21
+dependencies:
+  pre:
+    # Enable Xdebug extension.
+    - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+    # Restart Apache to load new extensions.
+    - sudo service apache2 restart && php -v && php -m
+    # Set up the app and prepare to test.
+    - mysql -e 'CREATE DATABASE PROJECT;' -uroot;
+test:
+  override:
+    - ./vendor/bin/codecept --steps run PROJECT --coverage --coverage-text

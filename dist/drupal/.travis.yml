@@ -1,0 +1,11 @@
+sudo: false
+services:
+  - mysql
+language:
+  - php
+php:
+  - 5.5
+before_script:
+  - mysql -e 'CREATE DATABASE PROJECT;' -uroot;
+script:
+  - ./vendor/bin/codecept --steps run PROJECT --coverage --coverage-text

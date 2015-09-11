@@ -1,0 +1,24 @@
+# Codeception Test Suite Configuration
+
+class_name: ActorPROJECT_CAMEL
+coverage:
+  include:
+    - app/*
+  exclude:
+    - app/cache/*
+modules:
+    error_level: "E_ALL"
+    enabled: [Filesystem, Asserts, Db, Phalcon1]
+    config:
+        Db:
+            dsn: 'mysql:host=127.0.0.1;dbname=PROJECT'
+            user: 'MYSQL_USER_NAME'
+            password: 'MYSQL_USER_PASS'
+            dump: 'tests/_bootstrap/PROJECT.sql'
+            populate: true
+            cleanup: false
+            reconnect: false
+        Phalcon1:
+            bootstrap: 'tests/_bootstrap/PROJECT.php'
+            cleanup: false
+            savepoints: false

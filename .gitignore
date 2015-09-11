@@ -1,0 +1,7 @@
+# Composer stuff.
+composer.phar
+composer.lock
+
+# IDE stuff.
+nbproject
+
