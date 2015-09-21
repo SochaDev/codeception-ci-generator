@@ -14,23 +14,27 @@ dependencies:
     # Clone the 1.3.5 Phalcon branch.
     # Replace install's phpize with full phpenv path equivalent.
     # @see https://forum.phalconphp.com/discussion/582/php-5-3-3-and-php-5-4-13-dual-installation-error
-    - git clone -b 1.3.5 --quiet --depth 1 git://github.com/phalcon/cphalcon.git && ls -la
-    - sed -i 's/phpize/~\/\.phpenv\/shims\/phpize/g' cphalcon/build/install
+    - git clone -b 1.3.5 --quiet --depth 1 git://github.com/phalcon/cphalcon.git && ls -la;
+    - sed -i 's/phpize/~\/\.phpenv\/shims\/phpize/g' cphalcon/build/install;
     # Install and enable Phalcon.
-    - cd cphalcon/build && ./install
-    - touch ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini && echo 'extension="phalcon.so"' > ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini
+    - cd cphalcon/build && ./install;
+    - touch ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini && echo 'extension="phalcon.so"' > ~/.phpenv/versions/$(phpenv global)/etc/conf.d/phalcon.ini;
     # Enable Xdebug extension.
-    - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+    - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini;
+    # Use our cloned docroot instead of Circle's /var/www.
+    - sudo yes | cp -f circle.vhost /etc/apache2/sites-available/default;
     # Restart Apache to load new extensions.
-    - sudo service apache2 restart && php -v && php -m
-    - chmod +x codeception-ci-generator.sh
-    - mysql -e 'CREATE DATABASE generic;' -uroot;
-    - mysql -e 'CREATE DATABASE drupal7;' -uroot;
-    - mysql -e 'CREATE DATABASE drupal8;' -uroot;
-    - mysql -e 'CREATE DATABASE phalcon1;' -uroot;
+    - sudo a2enmod rewrite;
+    - sudo service apache2 restart && php -v && php -m;
+    # Prepare to test.
+    - chmod +x codeception-ci-generator.sh;
+    - mysql -u root -e 'CREATE DATABASE generic;';
+    - mysql -u root -e 'CREATE DATABASE drupal7;';
+    - mysql -u root -e 'CREATE DATABASE drupal8;';
+    - mysql -u root -e 'CREATE DATABASE phalcon1;';
 test:
   override:
-    - ./codeception-ci-generator.sh --testing 1
-    - ./codeception-ci-generator.sh --testing 2
-    - ./codeception-ci-generator.sh --testing 3
-    - ./codeception-ci-generator.sh --testing 4
+    - ./codeception-ci-generator.sh --testing 1;
+    - ./codeception-ci-generator.sh --testing 2;
+    - ./codeception-ci-generator.sh --testing 3;
+    - ./codeception-ci-generator.sh --testing 4;

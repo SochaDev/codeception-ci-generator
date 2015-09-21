@@ -294,6 +294,9 @@ Building Codeception suite and running \"%s\" tests...
 
 " $PROJECT;
 ./vendor/bin/codecept build;
+if [[ $TYPE = 2 ]] || [[ $TYPE = 3 ]]; then
+  ./vendor/bin/drush status --root=./app --uri=localhost && ./vendor/bin/drush cc all --root=./app --uri=localhost;
+fi;
 ./vendor/bin/codecept --steps run $PROJECT;
 
 # Print confirmation.
