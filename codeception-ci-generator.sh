@@ -169,6 +169,7 @@ if [[ -f "tests/_bootstrap/bootstrap.php" ]]; then
 fi;
 mv tests/composer.json ./;
 mv tests/circle.yml ./;
+mv tests/circle.vhost ./;
 mv tests/.travis.yml ./;
 mv tests/suite tests/$PROJECT;
 # Create app dir.
